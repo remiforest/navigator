@@ -1,0 +1,179 @@
+<!-- Customer -->
+
+<template name="Customer">
+  <div class="row">
+    <div class="col-md-6 col-sm-6">
+
+      <div id="chart_div"></div>
+      <div id="selectedBox"></div>
+
+      {{#if jsReady}}
+        {{customerChart}}
+      {{else}}
+        {{>loading}}
+      {{/if}}
+      
+      <button type="button" class="btn btn-primary btn-xs btn-danger" id="deleteEntityBtn" data-toggle="modal" data-target="#deleteEntityModal" data-entity="{{clickedEntity._id}}">
+        Delete {{#if clickedEntity }}entity{{else}}customer{{/if}}
+      </button>
+
+      {{#if clickedEntity }}
+        <button type="button" class="btn btn-primary btn-xs" id="moveEntityBtn" data-toggle="modal" data-target="#moveEntityModal">
+          Move entity
+        </button>
+      {{/if}}
+
+      <button type="button" class="pull-right btn btn-primary btn-xs" id="addEntityBtn" data-toggle="modal" data-target="#newEntityModal">
+        Add entity
+      </button>
+      <br/>
+      <hr>
+
+      {{ #if clickedEntity}}
+
+        {{#with clickedEntity}}
+          {{>entityDescription}}
+        {{/with}}
+
+      {{else}}
+
+        {{#with clickedCustomer}}
+          {{>customerDescription}}
+        {{/with}}
+
+      {{/if }}
+
+
+      <hr>
+    </div>
+    <div class="col-md-6 col-sm-6">
+      <div class="row">
+        {{ #if clickedEntity}}
+
+          {{#with clickedEntity}}
+            {{>entityProjects}}
+            <hr>
+            {{>entityContacts}}
+          {{/with}}
+        
+        {{else}}
+        
+          {{#with clickedCustomer}}
+            {{>customerProjects}}
+          {{/with}}
+        
+        {{/if }}
+      </div>
+      <div class="row">
+        {{#with clickedCustomer}}
+          {{>customerContacts}}
+        {{/with}}
+      </div>
+    </div>
+    
+  </div>  
+
+
+  <!-- New entity modal -->
+
+  <div class="modal fade" id="newEntityModal" tabindex="-1" role="dialog" data-customer="{{_id}}" data-entity="{{clickedEntity._id}}">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">
+          {{#if clickedEntity }}
+            New sub-entity for {{clickedEntity.name}}
+          {{else}}
+            New entity for {{name}}
+          {{/if}}
+          </h4>
+        </div>
+        <div class="modal-body">
+              <input type="text" class="form-control" id="newEntityInput" placeholder="Enter entity name">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="createEntityBtn">Create</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
+  <div class="modal fade" id="deleteEntityModal" tabindex="-1" role="dialog" data-customer="{{_id}}" data-entity="{{clickedEntity._id}}">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">
+          Delete {{#if clickedEntity }} {{clickedEntity.name}}
+          {{else}}
+            {{name}}
+          {{/if}} ?
+          </h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="confirmDeleteEntityBtn">Delete</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <div class="modal fade" id="moveEntityModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">
+          Select new father.
+          </h4>
+        </div>
+        <div class="modal-body">
+            <div id="move_chart_div"></div>
+            {{#if jsReady}}
+              {{moveChart}}
+            {{/if}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
+
+</template>
+
+
+<template name="customerDescription">
+  <h5>Customer {{name}}</h5>
+  <form role="form">
+    <div class="form-group">
+      <textarea class="form-control" rows="5" id="customer-description">{{description}}</textarea>
+    </div>
+  </form>
+  <button type="button" class="btn btn-primary btn-xs" id="saveCustomerDescriptionBtn">
+    Save description
+  </button>
+</template>
+
+
+<template name="customerProjects">
+  <h5>Existing projects for customer {{name}}</h5>
+  {{#each projects}}
+    <a href="/project/{{_id}}" class="list-group-item">
+      {{name}} {{#unless complete}} <b style="color:red">INCOMPLETE</b>{{else}} <b style="color:green">COMPLETE</b> {{/unless}}
+    </a>
+  {{/each}}
+</template>
+
+
+<template name="customerContacts">
+  <h5>Existing contacts for customer {{name}}</h5>
+  {{#each contacts}}
+    {{>Contact_item}}
+  {{/each}}
+</template>

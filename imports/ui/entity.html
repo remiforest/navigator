@@ -1,0 +1,137 @@
+
+
+
+<template name="entityDescription">
+  <h5>Entity {{name}}</h5>
+  <form role="form">
+    <div class="form-group">
+      <textarea class="form-control" rows="5" id="entity-description">{{description}}</textarea>
+    </div>
+  </form>
+  <button type="button" class="btn btn-primary btn-xs" id="saveEntityDescriptionBtn" data-id="{{_id}}">
+    Save description
+  </button>
+</template> 
+
+
+
+
+<template name="entityContacts">
+
+      <h5>
+        Contacts for this entity
+        <button type="button" class="btn btn-primary btn-xs pull-right" id="addContactBtn" data-toggle="modal" data-target="#newContactModal">
+        Add contact
+      </button>
+      </h5>
+      <br/>
+      {{#each contacts}}
+        {{>Contact_item}}
+      {{/each}}
+      <br/>
+      
+
+
+    <!-- New contact modal -->
+
+  <div class="modal fade" id="newContactModal" tabindex="-1" role="dialog" data-customer="{{customer._id}}" data-entity="{{entity._id}}">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">New Contact for {{name}} ({{customer.name}})</h4>
+        </div>
+        <div class="modal-body">
+              <input type="text" class="form-control" id="newContactName" placeholder="Enter contact name">
+              <input type="text" class="form-control" id="newContactPosition" placeholder="Enter contact position">
+              <input type="text" class="form-control" id="newContactEmail" placeholder="Enter contact email">
+              <input type="text" class="form-control" id="newContactPhone" placeholder="Enter contact phone">
+              <button class="form-control" id="newContactReportsTo" data-toggle="modal" data-target="#newContactManagerModal">Reports to <span id="contactManager" data-id=""></span></button>
+              <input type="checkbox" id="newContactIsManager"> Contact is the entity manager 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="createContactBtn">Create</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <!-- Select manager modal -->
+
+  <div class="modal fade" id="newContactManagerModal" tabindex="-1" role="dialog">
+    <div id="manager" data-id=""></div>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Select manager for new contact</h4>
+        </div>
+        <div class="modal-body">
+            {{#each entityContacts}}
+              <div class="list-group-item set-contact-manager">{{name}} : {{position}} {{#if is_manager}}(manager){{/if}} {{#if role}}({{role}}){{/if}} </div>
+            {{/each}}
+            {{!-- > ReactiveDatatable tableData=reactiveDataFunction options=optionsObject entity=entity._id --}}
+            <hr>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="addProjectContactBtn">Create</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
+
+
+</template>
+
+
+
+
+<template name="entityProjects">
+
+      <h5>
+        Existing projects for entity {{name}}
+        <button type="button" class="btn btn-primary btn-xs pull-right" id="addProjectBtn" data-toggle="modal" data-target="#newProjectModal">
+          Add project
+        </button>
+      </h5>
+
+      {{#each projects}}
+        {{> Project_item}}
+      {{/each}}
+      <br/>
+      
+
+
+    <!-- New project modal -->
+
+  <div class="modal fade" id="newProjectModal" tabindex="-1" role="dialog" data-customer="{{customer._id}}" data-entity="{{entity._id}}">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">New Project for {{entity.name}} for customer {{customer.name}}</h4>
+        </div>
+        <div class="modal-body">
+              <input type="text" class="form-control" id="newProjectName" placeholder="Enter project name">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="createProjectBtn">Create</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</template>
+
+
+
+
+<template name="Project_item">
+    <a href="/project/{{_id}}" class="list-group-item">
+      {{name}} {{#unless complete}} <b style="color:red">INCOMPLETE</b>{{else}} <b style="color:green">COMPLETE</b> {{/unless}}
+    </a>
+</template>
